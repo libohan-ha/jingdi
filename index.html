@@ -1,0 +1,41 @@
+        };
+
+        // 使用 XMLHttpRequest 监控上传进度
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://xiaoai.plus/v1/chat/completions", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Authorization", `Bearer ${apiKey}`);
+
+        // 显示进度条
+        progressBar.style.display = 'block';
+
+        xhr.upload.onprogress = function(event) {
+          if (event.lengthComputable) {
+            const percentComplete = (event.loaded / event.total) * 100;
+            progressFill.style.width = percentComplete + '%'; // 更新进度条宽度
+          }
+        };
+
+        xhr.onload = function() {
+          const data = JSON.parse(xhr.responseText);
+          const gptResponse = data.choices[0].message.content;
+          document.getElementById('response').textContent = gptResponse;
+          progressBar.style.display = 'none'; // 隐藏进度条
+        };
+
+        xhr.onerror = function() {
+          console.error('Error:', xhr.statusText);
+          document.getElementById('response').textContent = 'An error occurred. Check the console for details.';
+          progressBar.style.display = 'none'; // 隐藏进度条
+        };
+
+        // 发送请求
+        xhr.send(JSON.stringify(payload));
+      };
+      
+      reader.readAsDataURL(file);
+    });
+  </script>
+
+</body>
+</html>
